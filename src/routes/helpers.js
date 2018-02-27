@@ -7,7 +7,6 @@ const getAnswersPromisesArray = (allQuestionsArray) => {
   const answersPromisesArray = [];
   allQuestionsArray.map((question) => {
     const quesId = question.questionId;
-    console.log(secondApiUrl + quesId);
     const answerPromise = rp(secondApiUrl + quesId);
     answersPromisesArray.push(answerPromise);
   });
