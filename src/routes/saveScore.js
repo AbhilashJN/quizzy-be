@@ -9,9 +9,11 @@ module.exports = [
     path: '/saveScore',
     method: 'POST',
     handler: (request, response) => {
-      Models.users.update({ username: request.payload.username, latestScore: request.payload.latestScore }, {
+      const req = JSON.parse(request.payload);
+      console.log(req, typeof req);
+      Models.users.update({ username: req.username, latestScore: req.latestScore }, {
         where: {
-          username: request.payload.username,
+          username: req.username,
         },
         returning: true,
       })

@@ -7,7 +7,7 @@ module.exports = [
     path: '/saveChoice',
     method: 'POST',
     handler: (request, response) => {
-      const reqPayload = request.payload;
+      const reqPayload = JSON.parse(request.payload);
       const reqUser = reqPayload.username;
       const reqQuesId = reqPayload.questionId;
       const reqChoice = reqPayload.choice;

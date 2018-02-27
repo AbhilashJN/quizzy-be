@@ -7,7 +7,8 @@ module.exports = [
     path: '/login',
     method: 'POST',
     handler: (request, response) => {
-      const reqUsername = request.payload.username;
+      const reqUsername = JSON.parse(request.payload).username;
+      console.log(':::::::', JSON.parse(request.payload).username);
       Models.users.findOrCreate({
         where: {
           username: reqUsername,
