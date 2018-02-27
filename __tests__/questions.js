@@ -30,7 +30,7 @@ describe('Testing the server response', () => {
     };
     server.inject(options, (response) => {
       console.log(response.result);
-      expect(response.result).toEqual(ansArray);
+      expect(response.result).toEqual(helpers.allMerged);
       done();
     });
   });
