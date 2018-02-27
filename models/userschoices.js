@@ -1,11 +1,18 @@
-'use strict';
+
+
 module.exports = (sequelize, DataTypes) => {
-  var usersChoices = sequelize.define('usersChoices', {
-    username: DataTypes.STRING,
-    questionId: DataTypes.INTEGER,
-    choice: DataTypes.STRING
+  const usersChoices = sequelize.define('usersChoices', {
+    username: {
+      type: DataTypes.STRING,
+      unique: 'compositeIndex',
+    },
+    questionId: {
+      type: DataTypes.INTEGER,
+      unique: 'compositeIndex',
+    },
+    choice: DataTypes.STRING,
   }, {});
-  usersChoices.associate = function(models) {
+  usersChoices.associate = function (models) {
     // associations can be defined here
   };
   return usersChoices;
