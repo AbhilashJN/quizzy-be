@@ -3,16 +3,23 @@ const Models = require('../models');
 
 describe('Testing login api', () => {
   beforeAll((done) => {
-    Models.users.create({
+    Models.users.bulkCreate([{
       username: 'firstUser',
       latestScore: 7,
-    }).then(() => { done(); });
+    },
+    {
+      username: 'secondUser',
+      latestScore: 0,
+    },
+    ]).then(() => {
+      done();
+    });
   });
   afterAll((done) => {
     Models.users.destroy({
       truncate: true,
       restartIdentity: true,
-    }).then(() => { done(); });
+    }).then(() => { Models.usersChoices.destroy({ truncate: true, restartIdentity: true }).then(() => { done(); }); });
   });
 
 
@@ -21,17 +28,18 @@ describe('Testing login api', () => {
       url: '/login',
       method: 'POST',
       payload: {
-        username: 'secondUser',
+        username: 'thirdUser',
       },
     };
     server.inject(options, (response) => {
-      expect(response.payload).toMatch('Created');
+      const expectedObj = { username: 'thirdUser', latestScore: 0, choices: [] };
+      expect(response.result).toEqual(expectedObj);
       done();
     });
   });
 
 
-  it('Testing for existing user', (done) => {
+  it('Testing for existing user with multiple choices saved', (done) => {
     const options = {
       url: '/login',
       method: 'POST',
@@ -39,8 +47,104 @@ describe('Testing login api', () => {
         username: 'firstUser',
       },
     };
+    Models.usersChoices.bulkCreate([
+      {
+        username: 'firstUser',
+        questionId: 1,
+        choice: 'firstchoice',
+      },
+      {
+        username: 'firstUser',
+        questionId: 2,
+        choice: 'secondchoice',
+      },
+      {
+        username: 'firstUser',
+        questionId: 3,
+        choice: 'thirdchoice',
+      },
+      {
+        username: 'firstUser',
+        questionId: 4,
+        choice: 'firstchoice',
+      },
+      {
+        username: 'firstUser',
+        questionId: 5,
+        choice: 'fourthchoice',
+      },
+      {
+        username: 'firstUser',
+        questionId: 6,
+        choice: 'thirdchoice',
+      },
+      {
+        username: 'firstUser',
+        questionId: 7,
+        choice: 'firstchoice',
+      },
+      {
+        username: 'firstUser',
+        questionId: 8,
+        choice: 'secondchoice',
+      },
+    ]).then(() => {
+      server.inject(options, (response) => {
+        const expectedObj = {
+          username: 'firstUser',
+          latestScore: 7,
+          choices: [
+            {
+              questionId: 1,
+              choice: 'firstchoice',
+            },
+            {
+              questionId: 2,
+              choice: 'secondchoice',
+            },
+            {
+              questionId: 3,
+              choice: 'thirdchoice',
+            },
+            {
+              questionId: 4,
+              choice: 'firstchoice',
+            },
+            {
+              questionId: 5,
+              choice: 'fourthchoice',
+            },
+            {
+              questionId: 6,
+              choice: 'thirdchoice',
+            },
+            {
+              questionId: 7,
+              choice: 'firstchoice',
+            },
+            {
+              questionId: 8,
+              choice: 'secondchoice',
+            },
+          ],
+        };
+        expect(response.result).toEqual(expectedObj);
+        done();
+      });
+    });
+  });
+
+  it('Testing for existing user with 0 choices saved', (done) => {
+    const options = {
+      url: '/login',
+      method: 'POST',
+      payload: {
+        username: 'secondUser',
+      },
+    };
     server.inject(options, (response) => {
-      expect(response.payload).toMatch('Logged in');
+      const expectedObj = { username: 'secondUser', latestScore: 0, choices: [] };
+      expect(response.result).toEqual(expectedObj);
       done();
     });
   });
