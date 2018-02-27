@@ -9,7 +9,7 @@ module.exports = [
     path: '/questions',
     method: 'GET',
     handler: (request, response) => {
-      const resultPromise = helpers.getBooksWithRatings();
+      const resultPromise = helpers.getQuestionsWithAnswers();
       resultPromise.then(response);
     },
   },
