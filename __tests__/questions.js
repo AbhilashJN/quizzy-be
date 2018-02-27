@@ -7,7 +7,8 @@ describe('Testing the server response', () => {
       method: 'GET',
     };
     server.inject(options, (response) => {
-      expect(response.payload).toMatch('OK');
+      console.log(response.result);
+      expect(Object.keys(response.result)).toEqual(['allQuestions']);
       done();
     });
   });
